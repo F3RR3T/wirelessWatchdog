@@ -1,11 +1,10 @@
 [Unit]
-Description= Take a photo every thirty seconds
+Description=Walk the wireless watchdog
 
 [Timer]
-#OnBootSec=1min
-AccuracySec=1us
-OnCalendar=*:*:00,30
-Unit=carport.service
+OnActiveSec=5min
+#OnCalendar=*:*:00,30
+Unit=wlanWDog.service
 
 [Install]
 WantedBy=timers.target
