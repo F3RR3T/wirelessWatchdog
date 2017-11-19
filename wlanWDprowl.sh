@@ -23,7 +23,7 @@ wirelessLink=$(networkctl | awk '/wlan/ {print $2}')
 wlanStatus=$(networkctl status ${wirelessLink} | awk '/State:/ {print $2}')
 logline="$(date) ${wlanStatus}"
 # write all to log for now. This will show if I'm still alive.
-echo ${logline}
+echo ${logline} >> ${logdir}/wlanStatus.log
 
 if [ ${wlanStatus} != "routable" ]; then 
     # we have lost wireless, so log the occurrence and restart the service
