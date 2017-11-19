@@ -3,22 +3,30 @@
 # SJP 19 Nov 2017
 #
 # Designed to stop a headless wireless raspi from disappearing from the LAN.
-# IS called from a systemd timer
+# IS called from a systemd timer on an Arch linux OS.
 #
 cd /usr/local/bin
 # The following block enables private configuration
-logdir="/path/to/my/log"  # overwritten by sourcing from .logdir.config
+# I use .gitignore to exclude the config file trom github.
+logdir="/path/to/my/log"  # overwritten by sourcing from a local config file.
 if [ -e wlanWDlog.conf ]; then
-        . wlanWDlog.conf   # source directory name from local config file
+    . wlanWDlog.conf   # source directory name from local config file
 else echo "wlanWDlog.conf does not exist"; exit 1
 fi
 # end of privacy config
 
-# Detect the state of the wireless network adaptor
-wirelessLink='wlan0'    # ymmv
-wlanStatus=$(networkctl status ${wirelessLink} | grep 'State:')
-echo ${wlanStatus}
-echo $(whoami)
+# Get wireless adaptor name
+wirelessLink=$(networkctl | awk '/wlan/ {print $2}')
 
-logline=$(date)${wlanStatus}
-echo ${logline} >> ${logdir}/wlanStatus.log
+# Prowl:
+# Detect the state of the wireless network adaptor
+wlanStatus=$(networkctl status ${wirelessLink} | awk '/State:/ {print $2}')
+# echo ${wlanStatus}
+
+if [ ${wlanStatus} != "routable" ]; then 
+    # we have lost wireless, so log the occurrence and restart the service
+    logline="$(date) ${wlanStatus}"
+    echo ${logline} >> ${logdir}/wlanStatus.log
+    sudo systemctl restart systemd-networkd.service
+fi
+
