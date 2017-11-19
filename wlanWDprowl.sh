@@ -8,14 +8,17 @@
 cd /usr/local/bin
 # The following block enables private configuration
 logdir="/path/to/my/log"  # overwritten by sourcing from .logdir.config
-if [ -e logdir.config ]; then
-        . logdir.config   # source directory name from local config file
-else echo "logdir.config does not exist"; exit 1
+if [ -e wlanWDlog.conf ]; then
+        . wlanWDlog.conf   # source directory name from local config file
+else echo "wlanWDlog.conf does not exist"; exit 1
 fi
 # end of privacy config
 
 # Detect the state of the wireless network adaptor
 wirelessLink='wlan0'    # ymmv
-networkctl status ${wirlesessLink} | grep 'State:'
+wlanStatus=$(networkctl status ${wirelessLink} | grep 'State:')
+echo ${wlanStatus}
+echo $(whoami)
 
-
+logline=$(date)${wlanStatus}
+echo ${logline} >> ${logdir}/wlanStatus.log

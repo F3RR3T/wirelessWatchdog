@@ -3,6 +3,7 @@ Description=Walk the wireless watchdog
 
 [Timer]
 OnActiveSec=5min
+OnUnitActiveSec=1min
 #OnCalendar=*:*:00,30
 Unit=wlanWDog.service
 
