@@ -21,11 +21,12 @@ wirelessLink=$(networkctl | awk '/wlan/ {print $2}')
 # Prowl:
 # Detect the state of the wireless network adaptor
 wlanStatus=$(networkctl status ${wirelessLink} | awk '/State:/ {print $2}')
-# echo ${wlanStatus}
+logline="$(date) ${wlanStatus}"
+# write all to log for now. This will show if I'm still alive.
+echo ${logline}
 
 if [ ${wlanStatus} != "routable" ]; then 
     # we have lost wireless, so log the occurrence and restart the service
-    logline="$(date) ${wlanStatus}"
     echo ${logline} >> ${logdir}/wlanStatus.log
     sudo systemctl restart systemd-networkd.service
 fi
