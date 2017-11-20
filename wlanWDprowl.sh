@@ -27,6 +27,7 @@ echo ${logline} >> ${logdir}/wlanStatus.log
 
 if [ ${wlanStatus} != "routable" ]; then 
     # we have lost wireless, so log the occurrence and restart the service
+    echo "lost wireless" >> ${logdir}/wlanStatus.log
     echo ${logline} >> ${logdir}/wlanStatus.log
     sudo systemctl restart systemd-networkd.service
 fi
